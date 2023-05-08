@@ -54,9 +54,15 @@ def main():
     apk_zip = zipfile.ZipFile(apk_file)
 
     icon_file = next(
-        (f for f in apk_zip.namelist() if 'res/' in f and '/mipmap' in f and 'ic_launcher.png' in f),
+        (f for f in apk_zip.namelist() if 'res/' in f and '/mipmap-xxxhdpi-v4' in f and 'ic_launcher_foreground.png' in f),
         None
     )
+
+    if not icon_file:
+        icon_file = next(
+            (f for f in apk_zip.namelist() if 'res/' in f and '/mipmap' in f and 'ic_launcher.png' in f),
+            None
+        )
 
     aapt_cmd = ['aapt', 'dump', 'badging', apk_file]
     aapt_output = subprocess.check_output(aapt_cmd, universal_newlines=True)
