@@ -12,6 +12,14 @@ from PIL import Image
 import zipfile
 import json
 
+def get_supported_architectures(apk_zip):
+    architectures = []
+    for f in apk_zip.namelist():
+        if f.startswith('lib/'):
+            arch = f.split('/')[1]
+            if arch not in architectures:
+                architectures.append(arch)
+    return architectures
 
 def extract_app_icon(apk_zip, icon_file, apk_file):
     with apk_zip.open(icon_file) as icon_data:
@@ -88,6 +96,8 @@ def main():
     else:
         print("App icon not found in APK")
 
+    metadata['supported_architectures'] = get_supported_architectures(apk_zip)
+    
     metadata = convert_to_snake_case(metadata)
 
     for key, value in metadata.items():
